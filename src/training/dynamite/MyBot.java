@@ -2,7 +2,6 @@ package training.dynamite;
 
 import com.softwire.dynamite.bot.Bot;
 import com.softwire.dynamite.game.*;
-import jdk.nashorn.internal.runtime.Undefined;
 
 import java.util.List;
 import java.util.Random;
@@ -10,11 +9,13 @@ import java.util.stream.Collectors;
 
 public class MyBot implements Bot {
     public static int dynocount =0;
+    public static int i = 0;
     public MyBot() {
         // Are you debugging?
         // Put a breakpoint on the line below to see when we start a new match
 
         System.out.println("Started new match");
+
 
     }
 
@@ -47,12 +48,15 @@ public class MyBot implements Bot {
             } else {
                 move = internalMover(gamestate.getRounds().get(gamestate.getRounds().size() - 1).getP1().ordinal());
             }
+            if(MyBot.i>=3){
+               MyBot.i =0;
+            }
 
 
             if (shouldChangeStrat(winsLosses)) {
 
-                i = Randint(4);
-                int mov = stratchanger(i, gamestate, winsLosses, gamestate.getRounds().get(gamestate.getRounds().size() -1).getP1().ordinal());
+                MyBot.i++;
+                int mov = stratchanger(MyBot.i, gamestate, winsLosses, gamestate.getRounds().get(gamestate.getRounds().size() -1).getP1().ordinal());
                 move = internalMover(mov);
             }
             try {
@@ -65,7 +69,7 @@ public class MyBot implements Bot {
 
             if(move == Move.D){
                 dynocount++;
-                System.out.println(dynocount);
+                //System.out.println(dynocount);
                 if(dynocount >100 ){
                    move = internalMover(Randint(3));
                 }
@@ -124,7 +128,7 @@ public class MyBot implements Bot {
 
     public boolean shouldChangeStrat(List<ThreeState> winsLosses){
         try {
-            if (winsLosses.subList((winsLosses.size()-3), (winsLosses.size())).stream().allMatch(listItem -> (listItem == ThreeState.LOSE))) {
+            if (winsLosses.subList((winsLosses.size()-2), (winsLosses.size())).stream().allMatch(listItem -> (listItem == ThreeState.LOSE))) {
                 return true;
             } else{
                 return false;
@@ -140,7 +144,7 @@ public class MyBot implements Bot {
         {
             switch (stratChange) {
                 case 0:
-                    return Randint(6);
+                    return Randint(4);
                 case 1:
                     return defeatLastMove(gamestate,winsLosses, lastMove);
                 case 2:
