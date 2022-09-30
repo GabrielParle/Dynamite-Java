@@ -110,7 +110,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/gparle/IdeaProjects/Dynamite/Dynamite-Java"
+    "last_opened_file_path": "/Users/gparle/IdeaProjects/Dynamite/Dynamite-Java",
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -184,7 +185,7 @@
       <option name="presentableId" value="Default" />
       <updated>1548267251649</updated>
       <workItem from="1548267253231" duration="7209000" />
-      <workItem from="1664529238858" duration="3358000" />
+      <workItem from="1664529238858" duration="13572000" />
     </task>
     <servers />
   </component>
@@ -226,6 +227,37 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/training/dynamite/MyBot.java</url>
+          <line>196</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/training/dynamite/MyBot.java</url>
+          <line>144</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/training/dynamite/MyBot.java</url>
+          <line>77</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="returnRevese(gamestate.getRounds().get(winsLosses.size()-1).getP2().ordinal())" language="JAVA" />
+        <watch expression="defeatLastMove(gamestate,winsLosses, lastMove);" language="JAVA" />
+        <watch expression="winsLosses" language="JAVA" />
+        <watch expression="winsLosses.subList((winsLosses.size()-5), (winsLosses.size()))" language="JAVA" />
+        <watch expression="i" language="JAVA" />
+        <watch expression="winsLosses.get(winsLosses.size()-1)" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Dynamite-Java.iml">
