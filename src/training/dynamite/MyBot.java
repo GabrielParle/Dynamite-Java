@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 public class MyBot implements Bot {
     public static int dynocount =0;
     public static int i = 0;
+    public static int testCount =0;
+    public static int opponentDynamiteCount = 0;
     public MyBot() {
         // Are you debugging?
         // Put a breakpoint on the line below to see when we start a new match
@@ -27,53 +29,63 @@ public class MyBot implements Bot {
 
         try {
             int randomMove = Randint(5);
-            int i;
             Move move;
 
-            List<ThreeState> winsLosses = gamestate.getRounds().stream().map((round) -> {
-                if (round.getP1() == round.getP2()) {
-                    return ThreeState.DRAW;
-                }
-                if (xWinsAgainstY(round.getP1(), round.getP2())) {
-                    return ThreeState.WIN;
-                } else {
-                    return ThreeState.LOSE;
-                }
-            }).collect(Collectors.toList());
+            List<ThreeState> winsLosses = creatWinLosses(gamestate);
 
-            if (winsLosses.size() < 1) {
+            if (gamestate.getRounds().size() < 1) {
                 move = Move.P;
                 MyBot.dynocount =0;
+                opponentDynamiteCount =0;
 
             } else {
                 move = internalMover(gamestate.getRounds().get(gamestate.getRounds().size() - 1).getP1().ordinal());
             }
-            if(MyBot.i>=3){
+            if(MyBot.i>=4){
                MyBot.i =0;
             }
 
 
-            if (shouldChangeStrat(winsLosses)) {
 
-                MyBot.i++;
+
+            if (shouldChangeStrat(winsLosses) && winsLosses.size() %10 ==0) {
+
+                System.out.println("strat change");
+
+
+
                 int mov = stratchanger(MyBot.i, gamestate, winsLosses, gamestate.getRounds().get(gamestate.getRounds().size() -1).getP1().ordinal());
                 move = internalMover(mov);
+                MyBot.i++;
             }
+
+
+
+
+
             try {
                 if (winsLosses.get(winsLosses.size() - 1) == ThreeState.DRAW) {
-                    move = Move.D;
+                    move = Move.W;
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
+
             if(move == Move.D){
                 dynocount++;
                 //System.out.println(dynocount);
                 if(dynocount >100 ){
-                   move = internalMover(Randint(3));
+                    move = internalMover(Randint(3));
                 }
             }
+
+            if(oppnentdynamite(gamestate) && move == Move.W ){
+                move = internalMover(Randint(3));
+            }
+
+            testCount++;
+
             return move;
         }catch(Exception e){
             System.err.println(e.getMessage());
@@ -82,6 +94,8 @@ public class MyBot implements Bot {
         return Move.R;
 
     }
+
+
 
     public Move internalMover(int moveInt){
         switch (moveInt) {
@@ -127,8 +141,11 @@ public class MyBot implements Bot {
     }
 
     public boolean shouldChangeStrat(List<ThreeState> winsLosses){
+
         try {
-            if (winsLosses.subList((winsLosses.size()-2), (winsLosses.size())).stream().allMatch(listItem -> (listItem == ThreeState.LOSE))) {
+           List<ThreeState> subList = winsLosses.subList((winsLosses.size()-10), (winsLosses.size()))
+                   .stream().filter(listItem -> (listItem == ThreeState.LOSE)).collect(Collectors.toList());
+            if (5 < subList.size()) {
                 return true;
             } else{
                 return false;
@@ -144,15 +161,15 @@ public class MyBot implements Bot {
         {
             switch (stratChange) {
                 case 0:
-                    return Randint(4);
-                case 1:
                     return defeatLastMove(gamestate,winsLosses, lastMove);
+                case 1:
+                    return  beatAverage(gamestate);
                 case 2:
-                    return noD(gamestate,winsLosses, lastMove);
+                    return Randint(4);
                 case 3:
-                    return 1;
+                    return doubleDefeat(gamestate,winsLosses,lastMove);
                 case 4:
-                    return 1;
+                    return Randint(4);
                 default:
                     return 1;
             }
@@ -161,13 +178,20 @@ public class MyBot implements Bot {
 
     public int defeatLastMove(Gamestate gamestate, List<ThreeState> winsLosses,int lastmove )
     {
-        if(winsLosses.get(winsLosses.size()-1) == ThreeState.LOSE){
+
              return returnRevese(gamestate.getRounds().get(winsLosses.size()-1).getP2().ordinal());
-        } else {
-            return lastmove;
-        }
+
 
     }
+    public int doubleDefeat(Gamestate gamestate, List<ThreeState> winsLosses,int lastmove )
+    {
+
+         return returnPos(gamestate.getRounds().get(winsLosses.size()-1).getP1().ordinal());
+
+
+    }
+
+
 
     public int returnRevese(int input){
 
@@ -188,6 +212,26 @@ public class MyBot implements Bot {
                 }
             }
         }
+
+    public int returnPos(int input){
+
+        {
+            switch (input) {
+                case 0:
+                    return 2;
+                case 1:
+                    return 0;
+                case 2:
+                    return 1;
+                case 3:
+                    return 4;
+                case 4:
+                    return 1;
+                default:
+                    return 4;
+            }
+        }
+    }
 
 
     public enum ThreeState {
@@ -210,7 +254,50 @@ public class MyBot implements Bot {
         return lastmove;
 
     }
+
+    public Boolean oppnentdynamite(Gamestate gamesstate){
+        if(gamesstate.getRounds().get((gamesstate.getRounds().size() -1)).getP2() == Move.D){
+            opponentDynamiteCount++;
+        }
+        if(opponentDynamiteCount> 99){
+            return true;
+        } else{
+            return false;
+        }
+
     }
+
+
+    public List<ThreeState> creatWinLosses(Gamestate gamestate) {
+    return gamestate.getRounds().stream().map((round) -> {
+            if (round.getP1() == round.getP2()) {
+                return ThreeState.DRAW;
+            }
+            if (xWinsAgainstY(round.getP1(), round.getP2())) {
+                return ThreeState.WIN;
+            } else {
+                return ThreeState.LOSE;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    public int beatAverage(Gamestate gamestate){
+
+        int move;
+        long paper = gamestate.getRounds().stream().filter(round -> round.getP2().equals(Move.P)).count();
+        long rock = gamestate.getRounds().stream().filter(round -> round.getP2().equals(Move.R)).count();
+        long scissors = gamestate.getRounds().stream().filter(round -> round.getP2().equals(Move.S)).count();
+        //long dynamite = gamestate.getRounds().stream().filter(round -> round.getP2().equals(Move.D)).count();
+        if(paper>rock && paper > scissors){
+            move = 1;
+        } else if (rock >paper && rock > scissors) {
+            move = 0;
+        }else {
+            move = 2;
+        }
+        return returnRevese(move);
+    }
+}
 
 
 
