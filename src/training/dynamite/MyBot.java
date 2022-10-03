@@ -47,29 +47,24 @@ public class MyBot implements Bot {
 
 
 
+            move = internalMover( Randint(4));
 
-            if (shouldChangeStrat(winsLosses) && winsLosses.size() %10 ==0) {
-
-                System.out.println("strat change");
-
-
-
-                int mov = stratchanger(MyBot.i, gamestate, winsLosses, gamestate.getRounds().get(gamestate.getRounds().size() -1).getP1().ordinal());
-                move = internalMover(mov);
-                MyBot.i++;
-            }
-
-
-
+//
+//            if (shouldChangeStrat(winsLosses) && winsLosses.size() %10 ==0) {
+//
+//                System.out.println("strat change");
+//
+//
+//
+//                int mov = stratchanger(MyBot.i, gamestate, winsLosses, gamestate.getRounds().get(gamestate.getRounds().size() -1).getP1().ordinal());
+//                move = internalMover(mov);
+//                MyBot.i++;
+//            }
 
 
-            try {
-                if (winsLosses.get(winsLosses.size() - 1) == ThreeState.DRAW) {
-                    move = Move.W;
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+
+
+
 
 
             if(move == Move.D){
