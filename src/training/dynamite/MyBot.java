@@ -71,7 +71,7 @@ public class MyBot implements Bot {
                 dynocount++;
                 //System.out.println(dynocount);
                 if(dynocount >100 ){
-                    move = internalMover(Randint(3));
+                    move = internalMover(Randint(2));
                 }
             }
 
